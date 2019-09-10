@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3217079616554621496}
   - component: {fileID: 4071978031471759499}
   - component: {fileID: 420074466068062104}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 7264590357684822194}
   - component: {fileID: 5599343298922856396}
   - component: {fileID: 5947194762630920374}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Dynamite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
