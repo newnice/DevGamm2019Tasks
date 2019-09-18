@@ -2,91 +2,56 @@
 using System.Diagnostics;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
-using Random = UnityEngine.Random;
 
 public class Task2 : MonoBehaviour
 {
-    public const int PLAYERS_COUNT = 100000;
-    public const int PLAYERS_WITH_MAXIMUM_HP_COUNT = 100;
+    [SerializeField] private Pool playersPool = null;
+    public const int PlayersCount = 100000;
+    public const int PlayersWithMaximumHpCount = 100;
 
-    private WorldLogic worldLogic;
-    private Player[] players;
-    private Stopwatch perfomanceTimer;
+    private WorldLogic _worldLogic;
+    private Player[] _players;
+    private Stopwatch _performanceTimer;
 
     private void Awake()
     {
-        perfomanceTimer = new Stopwatch();
-        worldLogic = new WorldLogic();
-        players = new Player[PLAYERS_COUNT];
-        for (int i = 0; i < players.Length; i++)
+        _performanceTimer = new Stopwatch();
+        _worldLogic = new WorldLogic(playersPool);
+        _players = new Player[PlayersCount];
+        for (var i = 0; i < _players.Length; i++)
         {
-            players[i] = new Player();
-            players[i].ChangeHP();
-            players[i].ChangePosition();
+            _players[i] = new Player();
+            _players[i].ChangeHp();
+            _players[i].ChangePosition();
         }
     }
 
     private void Update()
     {
-        for (int i = 0; i < players.Length; i++)
+        for (var i = 0; i < _players.Length; i++)
         {
-            players[i].ChangeHP();
-            players[i].ChangePosition();
+            _players[i].ChangeHp();
+            _players[i].ChangePosition();
         }
 
-        worldLogic.ClearMiniMap();
 
-        perfomanceTimer.Start();
-        worldLogic.WorldUpdate(players);
-        perfomanceTimer.Stop();
+        DrawWorld();
+    }
 
-        if (worldLogic.PlayersDrawedOnMinimap != PLAYERS_WITH_MAXIMUM_HP_COUNT)
+    private void DrawWorld()
+    {
+        _worldLogic.ClearMiniMap();
+
+        _performanceTimer.Start();
+        _worldLogic.WorldUpdate(_players);
+        _performanceTimer.Stop();
+
+        if (_worldLogic.PlayersDrawedOnMinimap != PlayersWithMaximumHpCount)
         {
             throw new Exception("Minimap shows wrong amount players");
         }
 
-        Debug.Log($"World update time:{perfomanceTimer.ElapsedMilliseconds}");
-        perfomanceTimer.Reset();
-    }
-
-    public class Player
-    {
-        public Vector2 Position => position;
-        private Vector2 position;
-
-        public int Hp => hp;
-        private int hp;
-
-        public void ChangeHP()
-        {
-            hp += Random.Range(-100, 100);
-        }
-
-        public void ChangePosition()
-        {
-            position.x += Random.Range(-100f, 100f);
-            position.y += Random.Range(-100f, 100f);
-        }
-    }
-
-    public class WorldLogic
-    {
-        public int PlayersDrawedOnMinimap => playersDrawedOnMinimap;
-        private int playersDrawedOnMinimap;
-
-        public void ClearMiniMap()
-        {
-            playersDrawedOnMinimap = 0;
-        }
-
-        public void WorldUpdate(Player[] players)
-        {
-            //Write code here
-        }
-
-        private void DrawPlayerOnMinimap(Player player)
-        {
-            playersDrawedOnMinimap++;
-        }
+        Debug.Log($"World update time:{_performanceTimer.ElapsedMilliseconds}");
+        _performanceTimer.Reset();
     }
 }
