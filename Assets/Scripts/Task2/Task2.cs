@@ -6,6 +6,7 @@ using Debug = UnityEngine.Debug;
 public class Task2 : MonoBehaviour
 {
     [SerializeField] private Pool playersPool = null;
+    [SerializeField] private Minimap minimap = null;
     public const int PlayersCount = 100000;
     public const int PlayersWithMaximumHpCount = 100;
 
@@ -16,7 +17,7 @@ public class Task2 : MonoBehaviour
     private void Awake()
     {
         _performanceTimer = new Stopwatch();
-        _worldLogic = new WorldLogic(playersPool);
+        _worldLogic = new WorldLogic(playersPool, minimap);
         _players = new Player[PlayersCount];
         for (var i = 0; i < _players.Length; i++)
         {
@@ -41,7 +42,6 @@ public class Task2 : MonoBehaviour
     private void DrawWorld()
     {
         _worldLogic.ClearMiniMap();
-
         _performanceTimer.Start();
         _worldLogic.WorldUpdate(_players);
         _performanceTimer.Stop();

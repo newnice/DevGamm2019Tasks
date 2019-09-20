@@ -1,20 +1,22 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 public class WorldLogic
 {
     private Pool _playersPool;
+    private Minimap _minimap;
     public int PlayersDrawedOnMinimap { get; private set; }
 
-    public WorldLogic(Pool playersPool)
+    public WorldLogic(Pool playersPool, Minimap minimap)
     {
         _playersPool = playersPool;
+        _minimap = minimap;
     }
 
     public void ClearMiniMap()
     {
         _playersPool.ReturnObjects();
         PlayersDrawedOnMinimap = 0;
+        _minimap.Clear();
     }
 
     public void WorldUpdate(Player[] players)
@@ -33,6 +35,11 @@ public class WorldLogic
     }
 
 
+    /// <summary>
+    /// Forehead decision with linked list for storing first players with maximum hp.  
+    /// </summary>
+    /// <param name="players">Array of unsorted players</param>
+    /// <returns>IEnumerable with players sorted  by maximum hp</returns>
     private IEnumerable<Player> NaiveApproachWithLinkedList(Player[] players)
     {
         void InsertValue(Player newPlayer, LinkedList<Player> l, bool isInsert)
@@ -69,6 +76,12 @@ public class WorldLogic
     }
 
     private Heap<Player> _heap = new Heap<Player>(Task2.PlayersWithMaximumHpCount);
+
+    /// <summary>
+    /// Advanced decision with storing ordered players in heap. Overhead of place and reordering heap is more less then place data in linked list
+    /// </summary>
+    /// <param name="players">Array of unsorted players</param>
+    /// <returns>IEnumerable with players sorted  by maximum hp</returns>
     private IEnumerable<Player> HeapApproach(Player[] players)
     {
         const int heapSize = Task2.PlayersWithMaximumHpCount;
@@ -90,14 +103,9 @@ public class WorldLogic
     {
         var obj = _playersPool.Pop();
         if (obj != null)
-            obj.transform.position = ConvertToMiniMapCoordinates(player.Position);
+            _minimap.Draw(obj, player.Position);
+
 
         PlayersDrawedOnMinimap++;
-    }
-
-    private Vector2 ConvertToMiniMapCoordinates(Vector2 position)
-    {
-        float max = 25000f, min = -25000f;
-        return position * 200/500000;
     }
 }
